@@ -1,5 +1,5 @@
 pub type Token {
-  Int(value: Int)
+  Int(value: String)
   Float(value: String)
   String(value: String)
   CommentDoc(content: String)

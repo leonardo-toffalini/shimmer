@@ -10,7 +10,7 @@ pub fn main() {
 
 pub fn lexer_test() {
   let source =
-    "( ) [ ] { } + - * / < > <= >= % +. -. *. /. <. >. <=. >=. <> : , # ! = == != | || && << >> |> . -> <- .. @"
+    "( ) [ ] { } + - * / < > <= >= % +. -. *. /. <. >. <=. >=. <> : , # ! = == != | || && << >> |> . -> <- .. @ 42 3.14"
   let tokens = lexer.lex(source)
   let expected = [
     token.LeftParen,
@@ -55,6 +55,8 @@ pub fn lexer_test() {
     token.LArrow,
     token.DotDot,
     token.At,
+    token.Int("42"),
+    token.Float("3.14"),
     token.EndOfFile,
   ]
 
@@ -70,4 +72,12 @@ pub fn lexer_test() {
     }
     Error(msg) -> panic as msg
   }
+}
+
+pub fn error_lexer_test() {
+  let source = "§"
+  source |> lexer.lex |> should.equal(Error("Unexpected char: §"))
+
+  let source = "3.14.15"
+  source |> lexer.lex |> should.equal(Error("Not a valid number: 3.14.15"))
 }

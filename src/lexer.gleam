@@ -1,4 +1,6 @@
 import gleam/list
+import gleam/result
+import gleam/string
 import token.{type Token}
 
 pub fn lex(source: String) -> Result(List(Token), String) {
@@ -64,6 +66,55 @@ fn do_lex(source: String, acc: List(Token)) -> Result(List(Token), String) {
     "." <> rest -> do_lex(rest, [token.Dot, ..acc])
     "@" <> rest -> do_lex(rest, [token.At, ..acc])
 
-    c -> Error("Unexpected char:" <> c)
+    // int
+    "1" as c <> rest
+    | "2" as c <> rest
+    | "3" as c <> rest
+    | "4" as c <> rest
+    | "5" as c <> rest
+    | "6" as c <> rest
+    | "7" as c <> rest
+    | "8" as c <> rest
+    | "9" as c <> rest
+    | "0" as c <> rest -> {
+      use #(lit, rest, t) <- result.try(read_number(c <> rest, 0, ""))
+      case t {
+        "int" -> do_lex(rest, [token.Int(lit), ..acc])
+        "float" -> do_lex(rest, [token.Float(lit), ..acc])
+        _ -> panic
+      }
+    }
+
+    c -> Error("Unexpected char: " <> c)
+  }
+}
+
+fn read_number(
+  source: String,
+  dot_counter: Int,
+  acc: String,
+) -> Result(#(String, String, String), String) {
+  // returns #(number literal, rest, number type <Int, String>)
+
+  case source {
+    "1" as c <> rest
+    | "2" as c <> rest
+    | "3" as c <> rest
+    | "4" as c <> rest
+    | "5" as c <> rest
+    | "6" as c <> rest
+    | "7" as c <> rest
+    | "8" as c <> rest
+    | "9" as c <> rest
+    | "0" as c <> rest -> read_number(rest, dot_counter, c <> acc)
+
+    "." <> rest -> read_number(rest, dot_counter + 1, "." <> acc)
+
+    rest ->
+      case dot_counter {
+        0 -> Ok(#(string.reverse(acc), rest, "int"))
+        1 -> Ok(#(string.reverse(acc), rest, "float"))
+        _ -> Error("Not a valid number: " <> string.reverse(acc))
+      }
   }
 }
