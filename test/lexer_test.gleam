@@ -10,7 +10,7 @@ pub fn main() {
 
 pub fn lexer_test() {
   let source =
-    "( ) [ ] { } + - * / < > <= >= % +. -. *. /. <. >. <=. >=. <> : , # ! = == != | || && << >> |> . -> <- .. @ 42 3.14"
+    "( ) [ ] { } + - * / < > <= >= % +. -. *. /. <. >. <=. >=. <> : , # ! = == != | || && << >> |> . -> <- .. @ 42 3.14 \"asd\" "
   let tokens = lexer.lex(source)
   let expected = [
     token.LeftParen,
@@ -57,6 +57,7 @@ pub fn lexer_test() {
     token.At,
     token.Int("42"),
     token.Float("3.14"),
+    token.String("asd"),
     token.EndOfFile,
   ]
 
@@ -80,4 +81,7 @@ pub fn error_lexer_test() {
 
   let source = "3.14.15"
   source |> lexer.lex |> should.equal(Error("Not a valid number: 3.14.15"))
+
+  let source = "\"almafa"
+  source |> lexer.lex |> should.equal(Error("Unterminated string literal"))
 }

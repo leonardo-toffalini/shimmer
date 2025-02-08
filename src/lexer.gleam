@@ -66,6 +66,11 @@ fn do_lex(source: String, acc: List(Token)) -> Result(List(Token), String) {
     "." <> rest -> do_lex(rest, [token.Dot, ..acc])
     "@" <> rest -> do_lex(rest, [token.At, ..acc])
 
+    "\"" <> rest -> {
+      use #(lit, rest) <- result.try(read_string(rest, ""))
+      do_lex(rest, [token.String(lit), ..acc])
+    }
+
     // int
     "1" as c <> rest
     | "2" as c <> rest
@@ -89,13 +94,12 @@ fn do_lex(source: String, acc: List(Token)) -> Result(List(Token), String) {
   }
 }
 
+/// returns #(number literal, rest, number type <Int, String>)
 fn read_number(
   source: String,
   dot_counter: Int,
   acc: String,
 ) -> Result(#(String, String, String), String) {
-  // returns #(number literal, rest, number type <Int, String>)
-
   case source {
     "1" as c <> rest
     | "2" as c <> rest
@@ -106,15 +110,27 @@ fn read_number(
     | "7" as c <> rest
     | "8" as c <> rest
     | "9" as c <> rest
-    | "0" as c <> rest -> read_number(rest, dot_counter, c <> acc)
+    | "0" as c <> rest -> read_number(rest, dot_counter, acc <> c)
 
-    "." <> rest -> read_number(rest, dot_counter + 1, "." <> acc)
+    "." <> rest -> read_number(rest, dot_counter + 1, acc <> ".")
 
     rest ->
       case dot_counter {
-        0 -> Ok(#(string.reverse(acc), rest, "int"))
-        1 -> Ok(#(string.reverse(acc), rest, "float"))
-        _ -> Error("Not a valid number: " <> string.reverse(acc))
+        0 -> Ok(#(acc, rest, "int"))
+        1 -> Ok(#(acc, rest, "float"))
+        _ -> Error("Not a valid number: " <> acc)
       }
+  }
+}
+
+fn read_string(source: String, acc: String) -> Result(#(String, String), String) {
+  case source {
+    "\"" <> rest -> Ok(#(string.reverse(acc), rest))
+    _ -> {
+      case string.pop_grapheme(source) {
+        Ok(#(first, rest)) -> read_string(rest, first <> acc)
+        Error(Nil) -> Error("Unterminated string literal")
+      }
+    }
   }
 }
