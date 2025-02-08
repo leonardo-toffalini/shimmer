@@ -9,7 +9,8 @@ pub fn main() {
 }
 
 pub fn lexer_test() {
-  let source = "( ) [ ] { } + - * / < > <= >= % +. -. *. /. <. >. <=. >=."
+  let source =
+    "( ) [ ] { } + - * / < > <= >= % +. -. *. /. <. >. <=. >=. <> : , # ! = == != | || && << >> |> . -> <- .. @"
   let tokens = lexer.lex(source)
   let expected = [
     token.LeftParen,
@@ -35,6 +36,26 @@ pub fn lexer_test() {
     token.GreaterDot,
     token.LessEqualDot,
     token.GreaterEqualDot,
+    token.LtGt,
+    token.Colon,
+    token.Comma,
+    token.Hash,
+    token.Bang,
+    token.Equal,
+    token.EqualEqual,
+    token.NotEqual,
+    token.Vbar,
+    token.VbarVbar,
+    token.AmperAmper,
+    token.LtLt,
+    token.GtGt,
+    token.Pipe,
+    token.Dot,
+    token.RArrow,
+    token.LArrow,
+    token.DotDot,
+    token.At,
+    token.EndOfFile,
   ]
 
   case tokens {
