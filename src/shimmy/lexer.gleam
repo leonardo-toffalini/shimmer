@@ -1,7 +1,7 @@
 import gleam/list
 import gleam/result
 import gleam/string
-import token.{type Token}
+import shimmy/token.{type Token}
 
 pub fn lex(source: String) -> Result(List(Token), String) {
   do_lex(source, [])

@@ -1,8 +1,8 @@
 import gleam/list
 import gleeunit
 import gleeunit/should
-import lexer
-import token
+import shimmy/lexer
+import shimmy/token
 
 pub fn main() {
   gleeunit.main()
