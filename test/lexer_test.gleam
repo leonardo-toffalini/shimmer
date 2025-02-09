@@ -10,7 +10,7 @@ pub fn main() {
 
 pub fn lexer_test() {
   let source =
-    "( ) [ ] { } + - * / < > <= >= % +. -. *. /. <. >. <=. >=. <> : , # ! = == != | || && << >> |> . -> <- .. @ 42 3.14 \"asd\" "
+    "( ) [ ] { } + - * / < > <= >= % +. -. *. /. <. >. <=. >=. <> : , # ! = == != | || && << >> |> . -> <- .. @ 42 3.14 \"asd\" lower_word UpperWord _discard_word"
   let tokens = lexer.lex(source)
   let expected = [
     token.LeftParen,
@@ -58,6 +58,9 @@ pub fn lexer_test() {
     token.Int("42"),
     token.Float("3.14"),
     token.String("asd"),
+    token.Name("lower_word"),
+    token.UpName("UpperWord"),
+    token.DiscardName("_discard_word"),
     token.EndOfFile,
   ]
 

@@ -90,6 +90,74 @@ fn do_lex(source: String, acc: List(Token)) -> Result(List(Token), String) {
       }
     }
 
+    // _discard_name
+    "_" <> rest -> {
+      use #(lit, rest) <- result.try(read_name(rest, ""))
+      do_lex(rest, [token.DiscardName("_" <> lit), ..acc])
+    }
+
+    // lower_name
+    "a" as c <> rest
+    | "b" as c <> rest
+    | "c" as c <> rest
+    | "d" as c <> rest
+    | "e" as c <> rest
+    | "f" as c <> rest
+    | "g" as c <> rest
+    | "h" as c <> rest
+    | "i" as c <> rest
+    | "j" as c <> rest
+    | "k" as c <> rest
+    | "l" as c <> rest
+    | "m" as c <> rest
+    | "n" as c <> rest
+    | "o" as c <> rest
+    | "p" as c <> rest
+    | "q" as c <> rest
+    | "r" as c <> rest
+    | "s" as c <> rest
+    | "t" as c <> rest
+    | "u" as c <> rest
+    | "v" as c <> rest
+    | "w" as c <> rest
+    | "x" as c <> rest
+    | "y" as c <> rest
+    | "z" as c <> rest -> {
+      use #(lit, rest) <- result.try(read_name(c <> rest, ""))
+      do_lex(rest, [token.Name(lit), ..acc])
+    }
+
+    // UpperName
+    "A" as c <> rest
+    | "B" as c <> rest
+    | "C" as c <> rest
+    | "D" as c <> rest
+    | "E" as c <> rest
+    | "F" as c <> rest
+    | "G" as c <> rest
+    | "H" as c <> rest
+    | "I" as c <> rest
+    | "J" as c <> rest
+    | "K" as c <> rest
+    | "L" as c <> rest
+    | "M" as c <> rest
+    | "N" as c <> rest
+    | "O" as c <> rest
+    | "P" as c <> rest
+    | "Q" as c <> rest
+    | "R" as c <> rest
+    | "S" as c <> rest
+    | "T" as c <> rest
+    | "U" as c <> rest
+    | "V" as c <> rest
+    | "W" as c <> rest
+    | "X" as c <> rest
+    | "Y" as c <> rest
+    | "Z" as c <> rest -> {
+      use #(lit, rest) <- result.try(read_up_name(c <> rest, ""))
+      do_lex(rest, [token.UpName(lit), ..acc])
+    }
+
     c -> Error("Unexpected char: " <> c)
   }
 }
@@ -132,5 +200,101 @@ fn read_string(source: String, acc: String) -> Result(#(String, String), String)
         Error(Nil) -> Error("Unterminated string literal")
       }
     }
+  }
+}
+
+fn read_name(source: String, acc: String) -> Result(#(String, String), String) {
+  case source {
+    "a" as c <> rest
+    | "b" as c <> rest
+    | "c" as c <> rest
+    | "d" as c <> rest
+    | "e" as c <> rest
+    | "f" as c <> rest
+    | "g" as c <> rest
+    | "h" as c <> rest
+    | "i" as c <> rest
+    | "j" as c <> rest
+    | "k" as c <> rest
+    | "l" as c <> rest
+    | "m" as c <> rest
+    | "n" as c <> rest
+    | "o" as c <> rest
+    | "p" as c <> rest
+    | "q" as c <> rest
+    | "r" as c <> rest
+    | "s" as c <> rest
+    | "t" as c <> rest
+    | "u" as c <> rest
+    | "v" as c <> rest
+    | "w" as c <> rest
+    | "x" as c <> rest
+    | "y" as c <> rest
+    | "z" as c <> rest
+    | "_" as c <> rest -> read_name(rest, acc <> c)
+
+    _ -> Ok(#(acc, source))
+  }
+}
+
+fn read_up_name(
+  source: String,
+  acc: String,
+) -> Result(#(String, String), String) {
+  case source {
+    "A" as c <> rest
+    | "B" as c <> rest
+    | "C" as c <> rest
+    | "D" as c <> rest
+    | "E" as c <> rest
+    | "F" as c <> rest
+    | "G" as c <> rest
+    | "H" as c <> rest
+    | "I" as c <> rest
+    | "J" as c <> rest
+    | "K" as c <> rest
+    | "L" as c <> rest
+    | "M" as c <> rest
+    | "N" as c <> rest
+    | "O" as c <> rest
+    | "P" as c <> rest
+    | "Q" as c <> rest
+    | "R" as c <> rest
+    | "S" as c <> rest
+    | "T" as c <> rest
+    | "U" as c <> rest
+    | "V" as c <> rest
+    | "W" as c <> rest
+    | "X" as c <> rest
+    | "Y" as c <> rest
+    | "Z" as c <> rest
+    | "a" as c <> rest
+    | "b" as c <> rest
+    | "c" as c <> rest
+    | "d" as c <> rest
+    | "e" as c <> rest
+    | "f" as c <> rest
+    | "g" as c <> rest
+    | "h" as c <> rest
+    | "i" as c <> rest
+    | "j" as c <> rest
+    | "k" as c <> rest
+    | "l" as c <> rest
+    | "m" as c <> rest
+    | "n" as c <> rest
+    | "o" as c <> rest
+    | "p" as c <> rest
+    | "q" as c <> rest
+    | "r" as c <> rest
+    | "s" as c <> rest
+    | "t" as c <> rest
+    | "u" as c <> rest
+    | "v" as c <> rest
+    | "w" as c <> rest
+    | "x" as c <> rest
+    | "y" as c <> rest
+    | "z" as c <> rest -> read_up_name(rest, acc <> c)
+
+    _ -> Ok(#(acc, source))
   }
 }

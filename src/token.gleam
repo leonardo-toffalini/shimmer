@@ -1,4 +1,7 @@
 pub type Token {
+  Name(value: String)
+  UpName(value: String)
+  DiscardName(value: String)
   Int(value: String)
   Float(value: String)
   String(value: String)
