@@ -16,11 +16,26 @@ fn do_lex(source: String, acc: List(Token)) -> Result(List(Token), String) {
     " " <> rest | "\t" <> rest | "\n" <> rest | "\r" <> rest ->
       do_lex(rest, acc)
 
-    "<>" <> rest -> do_lex(rest, [token.LtGt, ..acc])
+    // comments
+    "////" <> rest -> {
+      let #(comment, rest) = read_comment(rest, "")
+      do_lex(rest, [token.CommentModule(comment), ..acc])
+    }
+    "///" <> rest -> {
+      let #(comment, rest) = read_comment(rest, "")
+      do_lex(rest, [token.CommentDoc(comment), ..acc])
+    }
+    "//" <> rest -> {
+      let #(comment, rest) = read_comment(rest, "")
+      do_lex(rest, [token.CommentNormal(comment), ..acc])
+    }
 
-    // 2 char tokens
+    // 3 char tokens
     "<=." <> rest -> do_lex(rest, [token.LessEqualDot, ..acc])
     ">=." <> rest -> do_lex(rest, [token.GreaterEqualDot, ..acc])
+
+    // 2 char tokens
+    "<>" <> rest -> do_lex(rest, [token.LtGt, ..acc])
     "+." <> rest -> do_lex(rest, [token.PlusDot, ..acc])
     "-." <> rest -> do_lex(rest, [token.MinusDot, ..acc])
     "*." <> rest -> do_lex(rest, [token.StarDot, ..acc])
@@ -331,4 +346,15 @@ fn lookup_keyword(name: String) -> Result(Token, Nil) {
     ])
 
   dict.get(keywords, name)
+}
+
+fn read_comment(source: String, acc: String) -> #(String, String) {
+  case source {
+    "\n" <> rest | "\r\n" <> rest -> #(acc, rest)
+    _ ->
+      case string.pop_grapheme(source) {
+        Ok(#(first, rest)) -> read_comment(rest, acc <> first)
+        Error(Nil) -> #(acc, "")
+      }
+  }
 }

@@ -122,6 +122,33 @@ pub fn keyword_test() {
   }
 }
 
+pub fn comment_test() {
+  let source =
+    "//// this is a comment module
+    /// this is a comment doc
+    // this is a normal comment"
+  let tokens = lexer.lex(source)
+  let expected = [
+    token.CommentModule(" this is a comment module"),
+    token.CommentDoc(" this is a comment doc"),
+    token.CommentNormal(" this is a normal comment"),
+    token.EndOfFile,
+  ]
+
+  case tokens {
+    Ok(tokens) -> {
+      should.equal(list.length(tokens), list.length(expected))
+      let pairs = list.zip(tokens, expected)
+      list.map(pairs, fn(pair) {
+        case pair {
+          #(tok, exp) -> should.equal(tok, exp)
+        }
+      })
+    }
+    Error(msg) -> panic as msg
+  }
+}
+
 pub fn error_lexer_test() {
   let source = "§"
   source |> lexer.lex |> should.equal(Error("Unexpected char: §"))
