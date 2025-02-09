@@ -78,6 +78,50 @@ pub fn lexer_test() {
   }
 }
 
+pub fn keyword_test() {
+  let source =
+    "as assert auto case const delegate derive echo else fn if implement import let macro opaque panic pub test todo type use"
+  let tokens = lexer.lex(source)
+  let expected = [
+    token.As,
+    token.Assert,
+    token.Auto,
+    token.Case,
+    token.Const,
+    token.Delegate,
+    token.Derive,
+    token.Echo,
+    token.Else,
+    token.Fn,
+    token.If,
+    token.Implement,
+    token.Import,
+    token.Let,
+    token.Macro,
+    token.Opaque,
+    token.Panic,
+    token.Pub,
+    token.Test,
+    token.Todo,
+    token.Type,
+    token.Use,
+    token.EndOfFile,
+  ]
+
+  case tokens {
+    Ok(tokens) -> {
+      should.equal(list.length(tokens), list.length(expected))
+      let pairs = list.zip(tokens, expected)
+      list.map(pairs, fn(pair) {
+        case pair {
+          #(tok, exp) -> should.equal(tok, exp)
+        }
+      })
+    }
+    Error(msg) -> panic as msg
+  }
+}
+
 pub fn error_lexer_test() {
   let source = "§"
   source |> lexer.lex |> should.equal(Error("Unexpected char: §"))

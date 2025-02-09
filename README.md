@@ -22,3 +22,6 @@ Further documentation can be found at <https://hexdocs.pm/shimmer>.
 gleam run   # Run the project
 gleam test  # Run the tests
 ```
+
+# TODO
+- [ ] comments

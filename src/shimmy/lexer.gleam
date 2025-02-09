@@ -1,3 +1,4 @@
+import gleam/dict
 import gleam/list
 import gleam/result
 import gleam/string
@@ -124,7 +125,10 @@ fn do_lex(source: String, acc: List(Token)) -> Result(List(Token), String) {
     | "y" as c <> rest
     | "z" as c <> rest -> {
       use #(lit, rest) <- result.try(read_name(c <> rest, ""))
-      do_lex(rest, [token.Name(lit), ..acc])
+      case lookup_keyword(lit) {
+        Ok(kw) -> do_lex(rest, [kw, ..acc])
+        Error(Nil) -> do_lex(rest, [token.Name(lit), ..acc])
+      }
     }
 
     // UpperName
@@ -297,4 +301,34 @@ fn read_up_name(
 
     _ -> Ok(#(acc, source))
   }
+}
+
+fn lookup_keyword(name: String) -> Result(Token, Nil) {
+  let keywords =
+    dict.from_list([
+      #("as", token.As),
+      #("assert", token.Assert),
+      #("auto", token.Auto),
+      #("case", token.Case),
+      #("const", token.Const),
+      #("delegate", token.Delegate),
+      #("derive", token.Derive),
+      #("echo", token.Echo),
+      #("else", token.Else),
+      #("fn", token.Fn),
+      #("if", token.If),
+      #("implement", token.Implement),
+      #("import", token.Import),
+      #("let", token.Let),
+      #("macro", token.Macro),
+      #("opaque", token.Opaque),
+      #("panic", token.Panic),
+      #("pub", token.Pub),
+      #("test", token.Test),
+      #("todo", token.Todo),
+      #("type", token.Type),
+      #("use", token.Use),
+    ])
+
+  dict.get(keywords, name)
 }

@@ -6,6 +6,8 @@ pub type Token {
   Float(value: String)
   String(value: String)
   CommentDoc(content: String)
+  CommentNormal(content: String)
+  CommentModule(content: String)
 
   // Groupings
   LeftParen
@@ -61,8 +63,6 @@ pub type Token {
   EndOfFile
 
   // Extra
-  CommentNormal
-  CommentModule
   NewLine
 
   // Keywords (alphabetically):
