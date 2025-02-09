@@ -1,20 +1,20 @@
-# shimmer
+# shimmy
 
-[![Package Version](https://img.shields.io/hexpm/v/shimmer)](https://hex.pm/packages/shimmer)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/shimmer/)
+[![Package Version](https://img.shields.io/hexpm/v/shimmer)](https://hex.pm/packages/shimmy)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/shimmy/)
 
 ```sh
-gleam add shimmer@1
+gleam add shimmy
 ```
 ```gleam
-import shimmer
+import shimmy
 
 pub fn main() {
   // TODO: An example of the project in use
 }
 ```
 
-Further documentation can be found at <https://hexdocs.pm/shimmer>.
+Further documentation can be found at <https://hexdocs.pm/shimmy>.
 
 ## Development
 
